@@ -31,11 +31,11 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
     {
         $user = $this->security->getUser();
 
+        //dd($user);
+
         if (($resourceClass === Customer::class or $resourceClass === Invoice::class
             &&
-            !$this->auth->isGranted("ROLE_ADMIN") 
-            &&
-            $user instanceof Utilisateur)) {
+            !$this->auth->isGranted("ROLE_ADMIN"))) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
 
             if ($resourceClass === Customer::class) {
@@ -52,12 +52,20 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null)
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $user = $this->security->getUser();
+        if($user instanceof Utilisateur){
+            $this->addWhere($queryBuilder, $resourceClass);
+        }
+       
     }
 
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, ?string $operationName = null, array $context = [])
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $user = $this->security->getUser();
+        if($user instanceof Utilisateur){
+            $this->addWhere($queryBuilder, $resourceClass);
+        }
+       
     }
 
 }
