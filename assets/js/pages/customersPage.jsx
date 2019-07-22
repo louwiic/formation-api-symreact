@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import CustomersAPI from "../services/customersAPI";
 
-const CustomersPage = propos => {
+const CustomersPage = props => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -53,6 +53,12 @@ const CustomersPage = propos => {
   const handlePageChange = page => {
     setCurrentPage(page);
   };
+
+    //Gestion de la recherche & raméne à la page une pour le resultat
+    const handleSearch = ({ currentTarget }) => {
+      setSearch(currentTarget.value);
+      setCurrentPage(1);
+    };
 
   const itemsPerPage = 8; //Elément affiché par page
   //filtrage des customers en fonction de la recherche
