@@ -8,6 +8,9 @@ import Homepage from './pages/homepage';
 import InvoicesPage from './pages/InvoicesPage';
 import LoginPage from './pages/loginPage';
 import AuthAPI from "./services/authAPI";
+import CustomerPage from "./pages/customerPage";
+import InvoicePage from './pages/invoicePage';
+import RegisterPage from './pages/registerPage';
 
 
 //import le css
@@ -47,8 +50,11 @@ const App = () => {
                 <NavBarWithRouter />
                 <main className="container pt-5">
                     <Switch>
+                        <PrivateRoute path="/customers/:id" component={CustomerPage} />
+                        <PrivateRoute path="/invoices/:id" component={InvoicePage} />
                         <PrivateRoute path="/customers" component={CustomersPage} />
                         <PrivateRoute path="/invoices" component={InvoicesPage} />
+                        <Route path="/register" component={RegisterPage} />
                         <Route path="/login" component={LoginPage} />
                         <Route path="/" component={Homepage} />
                     </Switch>

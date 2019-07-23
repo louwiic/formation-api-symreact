@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import CustomersAPI from "../services/customersAPI";
+import {Link} from "react-router-dom";
 
 const CustomersPage = props => {
   const [customers, setCustomers] = useState([]);
@@ -48,17 +49,16 @@ const CustomersPage = props => {
       });*/
   };
 
-
   //Gestion du changement de page
   const handlePageChange = page => {
     setCurrentPage(page);
   };
 
-    //Gestion de la recherche & raméne à la page une pour le resultat
-    const handleSearch = ({ currentTarget }) => {
-      setSearch(currentTarget.value);
-      setCurrentPage(1);
-    };
+  //Gestion de la recherche & raméne à la page une pour le resultat
+  const handleSearch = ({ currentTarget }) => {
+    setSearch(currentTarget.value);
+    setCurrentPage(1);
+  };
 
   const itemsPerPage = 8; //Elément affiché par page
   //filtrage des customers en fonction de la recherche
@@ -78,7 +78,12 @@ const CustomersPage = props => {
 
   return (
     <>
-      <h1>Liste des clients</h1>
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <h1>Liste des clients</h1>
+        <Link to="/customers/new" className="btn btn-primary">
+          Créer un client
+        </Link>
+      </div>
       <input
         type="text"
         onChange={handleSearch}

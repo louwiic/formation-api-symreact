@@ -40,7 +40,7 @@ function setAxiosToken(token){
 
 /**
  * Mise en place lors du chargement de l'application
- */
+ */ 
 function verifAccess() {
     //récupére le token en cours..
     const token = window.localStorage.getItem("authToken");
