@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Field from "../components/forms/Field";
 import axios from "axios";
 import CustomersAPI from "../services/customersAPI";
+import { toast } from "react-toastify";
 
 const CustomerPage = ({history, match}) => {
   const { id } = match.params;
@@ -16,6 +17,7 @@ const CustomerPage = ({history, match}) => {
       console.log(error.response);
       history.replace("/customers");
       //Notification flash d'une erreur
+      toast.error("Le client n'a pas pu être chargé")
     }
   };
 
@@ -58,12 +60,13 @@ const CustomerPage = ({history, match}) => {
     try {
         if(editing){
             await CustomersAPI.update(id, customer);
-            //TODO: Flash notification de succès
+            toast.success("Le client a bien été modifier")
         }else{
             await CustomersAPI.create(customer);
+            toast.success("Le client à bien été ajouté")
             history.replace("/customers");
+           
         }
-
       setError("");
     } catch (error) {
       if (error.response.data.violations) {
@@ -72,7 +75,7 @@ const CustomerPage = ({history, match}) => {
           apiErrors[violation.propertyPath] = violation.message;
         });
         setError(apiErrors);
-        //Notif des erreurs
+        toast.error("Erreurs lors de la modification du client")
       }
     }
   };

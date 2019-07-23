@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import CustomersAPI from "../services/customersAPI";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = props => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchCustomers = async () => {
     try {
       const data = await CustomersAPI.findAll();
       setCustomers(data);
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
+      toast.error("Les clients n'ont pas pu être chargés");
     }
   };
 
@@ -36,9 +41,11 @@ const CustomersPage = props => {
     setCustomers(customers.filter(customer => customer.id !== id));
     try {
       await CustomersAPI.delete(id);
+      toast.success("Le client a bien été supprimé");
     } catch (error) {
       setCustomers(originalCustomers);
       console.log(error.response);
+      toast.error("Impossible de supprimer le client");
     }
     //Deuxime façon de faire requete traitemetn de promise
     /*CustomersAPI.delete(id)
@@ -91,52 +98,55 @@ const CustomersPage = props => {
         className="form-control"
         placeholder="Rechercher ..."
       />
-      <table className="table">
-        <thead>
-          <tr>
-            <th>L'identifiant</th>
-            <th>Client</th>
-            <th>Email</th>
-            <th>Entreprise</th>
-            <th />
-            <th>Factures</th>
-            <th>Montant total</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedCustomers.map(customer => (
-            <tr key={customer.id}>
-              <td>{customer.id}</td>
-              <td>
-                <a href="#">
-                  {customer.firstName} {customer.lastName}
-                </a>
-              </td>
-              <td>{customer.email}</td>
-              <td>{customer.company}</td>
-              <td>{customer.invoice}</td>
-              <td className="text-center">
-                <span className="badge badge-primary">
-                  {customer.invoices.length}
-                </span>
-              </td>
-              <td className="text-center">
-                {customer.totalAmount.toLocaleString()} €
-              </td>
-              <td className="text-center">
-                <button
-                  onClick={() => handleDelete(customer.id)}
-                  disabled={customer.invoices.length > 0}
-                  className="btn btn-sm btn-danger"
-                >
-                  supprimer
-                </button>
-              </td>
+      {(!loading && (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>L'identifiant</th>
+              <th>Client</th>
+              <th>Email</th>
+              <th>Entreprise</th>
+              <th />
+              <th>Factures</th>
+              <th>Montant total</th>
+              <th />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedCustomers.map(customer => (
+              <tr key={customer.id}>
+                <td>{customer.id}</td>
+                <td>
+                  <Link to={"/customers/" +customer.id}>
+                    {customer.firstName} {customer.lastName}
+                  </Link>
+                </td>
+                <td>{customer.email}</td>
+                <td>{customer.company}</td>
+                <td>{customer.invoice}</td>
+                <td className="text-center">
+                  <span className="badge badge-primary">
+                    {customer.invoices.length}
+                  </span>
+                </td>
+                <td className="text-center">
+                  {customer.totalAmount.toLocaleString()} €
+                </td>
+                <td className="text-center">
+                  <button
+                    onClick={() => handleDelete(customer.id)}
+                    disabled={customer.invoices.length > 0}
+                    className="btn btn-sm btn-danger"
+                  >
+                    supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )) || <TableLoader />}
+
       {itemsPerPage < filteredCustomers.length && (
         <Pagination
           currentPage={currentPage}

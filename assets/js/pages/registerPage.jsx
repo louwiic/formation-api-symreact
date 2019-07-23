@@ -3,6 +3,7 @@ import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import registerAPI from "../services/registerAPI";
+import { toast } from "react-toastify";
 
 const Register = ({ history }) => {
   const [user, setUser] = useState({
@@ -38,6 +39,7 @@ const Register = ({ history }) => {
       apiErrors.passwordConfirm =
         "Votre confirmation de mot de passe n'est pas conforme avec le mot de passe original";
         setErrors(apiErrors); 
+        toast.error("Des erreurs dans votre formulaires !");
         return;
     }
 
@@ -45,6 +47,7 @@ const Register = ({ history }) => {
       const response = await registerAPI.create(user);
       //console.log(response);
       setErrors({});
+      toast.success("Vous êtes désormais inscrit, vous pouvez vous connecter !");
       history.replace("/login");
     } catch (error) {
       const { violations } = error.response.data;
@@ -54,6 +57,7 @@ const Register = ({ history }) => {
         });
         setErrors(apiErrors);
       }
+      toast.error("Des erreurs dans votre formulaires !");
     }
   };
 

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../components/pagination";
 import InvoicesAPI from "../services/invoicesAPI";
 import {Link} from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const STATUS_CLASSES = {
   PAID: "success",
@@ -21,6 +23,7 @@ const InvoicesPage = props => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const itemsPerPage = 10; //Elément affiché par page
+  const [loading, setLoading] = useState(true);
 
   //Gestion du format de date 
   const formatDate = str => {
@@ -32,7 +35,11 @@ const InvoicesPage = props => {
     try {
       const data = await InvoicesAPI.findAll(); 
       setInvoices(data);
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Erreurs lors du chargement des factures");
+    }
   };
 
   useEffect(() => {
@@ -65,10 +72,12 @@ const InvoicesPage = props => {
       setInvoices(invoices.filter(invoice => invoice.id !== id)); 
       try {
         await InvoicesAPI.delete(id)
+        toast.success("La facture a bien été supprimée !");
           
       } catch (error) {
           console.log(error)
           setInvoices(originalInvoices);
+          toast.error("Une erreur est survenue !");
       }
   }
 
@@ -96,6 +105,7 @@ const InvoicesPage = props => {
         className="form-control"
         placeholder="Rechercher ..."
       />
+      {!loading && (
       <table className="table table-hover">
         <thead>
           <tr>
@@ -132,7 +142,8 @@ const InvoicesPage = props => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>)}
+      {loading && (<TableLoader />)}
 
       <Pagination
         currentPage={currentPage}

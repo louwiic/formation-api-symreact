@@ -11,6 +11,8 @@ import AuthAPI from "./services/authAPI";
 import CustomerPage from "./pages/customerPage";
 import InvoicePage from './pages/invoicePage';
 import RegisterPage from './pages/registerPage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 //import le css
@@ -24,7 +26,7 @@ require('../css/app.css');
  * @param {*} param0 
  */
 const PrivateRoute = ({ path, component }) => {
-    const { isAuthenticated } = useContext(AuthContext);    
+    const { isAuthenticated } = useContext(AuthContext);
 
     return isAuthenticated ? (
         <Route path={path} component={component} />
@@ -60,6 +62,7 @@ const App = () => {
                     </Switch>
                 </main>
             </ HashRouter>
+            <ToastContainer position={toast.POSITION.BOTTOM_LEFT}/>
         </AuthContext.Provider>
     )
 };

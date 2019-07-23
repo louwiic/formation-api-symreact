@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import CustomersAPI from "../services/customersAPI";
 import InvoicesAPI from "../services/invoicesAPI";
+import { toast } from "react-toastify";
 
 const InvoicePage = ({ history, match }) => {
   const { id = "new" } = match.params; //récupére le params dans l'url grâce à la props match
@@ -30,6 +31,7 @@ const InvoicePage = ({ history, match }) => {
       if (!invoice.customer) setInvoice({ ...invoice, customer: data[0].id });
     } catch (error) {
       console.log(error);
+      toast.error("Impossible de charger les clients")
     }
   };
   //récupération des factures
@@ -41,7 +43,7 @@ const InvoicePage = ({ history, match }) => {
     } catch (error) {
       console.log(error);
       history.replace("/invoices");
-      //flash notif erreur
+      toast.error("Impossible de charger les clients");
     }
   };
   // récupération de la liste des clients à chaque chargement des clients
@@ -81,11 +83,12 @@ const InvoicePage = ({ history, match }) => {
 
     if (editing) {
       const response = await InvoicesAPI.update(id, Invoice);
+      toast.success("La facture a bien été modifiée")
       console.log(response);
     } else {
       try {
         const data = await InvoicesAPI.post(Invoice);
-
+        toast.success("La facture a bien été crée")
         history.replace("/invoices");
       } catch (error) {
         //console.log(error.response);
@@ -95,8 +98,9 @@ const InvoicePage = ({ history, match }) => {
             apiErrors[violation.propertyPath] = violation.message;
           });
           setErrors(apiErrors);
-          // console.log(apiErrors);
-        }
+          toast.error("Des erreurs dans votre formulaires")
+
+         }
       }
     }
   };
