@@ -1,31 +1,32 @@
 import axios from "axios";
+import { INVOICES_API } from "../config";
 
 function findAll() {
     return axios
-      .get("http://127.0.0.1:8000/api/invoices")
+      .get(INVOICES_API)
       .then(response => response.data["hydra:member"]);
 }
 
 function deleteInvoice(id) {
     return axios
-    .delete("http://127.0.0.1:8000/api/invoices/" + id);
+    .delete(INVOICES_API + "/" + id);
 }
 
 function find(id){
    return axios
-    .get("http://127.0.0.1:8000/api/invoices/" + id)
+    .get(INVOICES_API + "/" + id)
     .then(response => response.data);
 }
 
 function post(invoice){
     return axios.post(
-        "http://127.0.0.1:8000/api/invoices",
+        INVOICES_API,
         invoice
       );
 
 }
 function update(id, invoice){
-   return axios.put("http://127.0.0.1:8000/api/invoices/" + id, invoice);
+   return axios.put(INVOICES_API + "/" + id, invoice);
 }
 
 export default{
